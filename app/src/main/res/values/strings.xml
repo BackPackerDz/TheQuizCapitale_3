@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TheQuizCapitale</string>
+    <string name="title_activity_list_scores">ListScoresActivity</string>
 </resources>

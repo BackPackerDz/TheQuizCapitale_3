@@ -1,21 +1,28 @@
-package com.technicien_superieur.thequizcapitale
+package com.technicien_superieur.thequizcapitale.activities
 
 import android.content.Context
 import android.content.DialogInterface
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
+import com.technicien_superieur.thequizcapitale.R
+import com.technicien_superieur.thequizcapitale.db.QuizDB
+import com.technicien_superieur.thequizcapitale.model.Quiz
+import com.technicien_superieur.thequizcapitale.model.Score
 import kotlinx.android.synthetic.main.activity_quiz.*
+import org.jetbrains.anko.doAsync
+import java.util.*
 
 class QuizActivity : AppCompatActivity() {
 
+    // On créer un objet QuizDB afin de pouvoir enregister nos score à la fin
+    val quizDb = QuizDB()
 
     var quizs = ArrayList<Quiz>()
     var numberOfGoodAnswers: Int = 0
     var currentQuizIndex: Int = 0
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +33,8 @@ class QuizActivity : AppCompatActivity() {
         quizs.add(Quiz("Quelle est la capitale de l'Angola ?", "Alger", "Paris", "Luanda", 3))
         quizs.add(Quiz("Quelle est la capitale de l'Autriche ?", "Alger", "Vienne", "Marseille", 2))
 
+        //Pour mélanger les questions
+        Collections.shuffle(quizs);
 
         showQuestion(quizs.get(currentQuizIndex))
     }
@@ -55,6 +64,13 @@ class QuizActivity : AppCompatActivity() {
 
             val sharedPreferences = getSharedPreferences("com.technicien_superieur.thequizcapitale", Context.MODE_PRIVATE)
             sharedPreferences.edit().putInt("userScore", numberOfGoodAnswers).apply()
+
+            // On registre notre score au niveau de notre base de donnée
+            // On utilise un doAsync afin de ne pas ralentir l'interface de l'utilisateur
+            doAsync {
+                val quizScore = Score(numberOfGoodAnswers, Calendar.getInstance().time.time)
+                quizDb.saveScore(scoreQuiz = quizScore)
+            }
 
             var alert = AlertDialog.Builder(this)
             alert.setTitle("Partie terminé!")

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity">
 
     <Button
         android:id="@+id/button"
@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:background="@android:color/holo_red_dark"
+        android:onClick="onClickBtnScores"
         android:text="MES SCORES"
         android:textColor="@android:color/white"
         android:textStyle="bold"
